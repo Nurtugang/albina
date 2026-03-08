@@ -19,7 +19,7 @@ const MESSAGES: Message[] = [
     backEmoji: '🌞',
     color: 'from-pink-300 to-rose-400',
     backColor: 'from-yellow-200 to-orange-200',
-    imageUrl: 'src\\assets\\1.jpeg',
+    imageUrl: '/1.jpeg',
   },
   {
     id: 2,
@@ -28,7 +28,7 @@ const MESSAGES: Message[] = [
     backEmoji: '💜',
     color: 'from-purple-300 to-violet-400',
     backColor: 'from-purple-100 to-pink-100',
-    imageUrl: 'src\\assets\\2.jpeg',
+    imageUrl: '/2.jpeg',
   },
   {
     id: 3,
@@ -37,7 +37,7 @@ const MESSAGES: Message[] = [
     backEmoji: '🥕',
     color: 'from-blue-200 to-cyan-300',
     backColor: 'from-green-100 to-teal-100',
-    imageUrl: 'src\\assets\\3.jpeg',
+    imageUrl: '/3.jpeg',
   }
 ];
 
