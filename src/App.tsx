@@ -62,7 +62,7 @@ function App() {
               exit={{ scale: 2, opacity: 0 }}
             >
               <div className="text-6xl mb-4 animate-heartbeat">💖</div>
-              <p className="text-pink-500 font-bold text-xl">Welcome, my love!</p>
+              <p className="text-pink-500 font-bold text-xl">Молодеццццц!</p>
             </motion.div>
           </motion.div>
         )}

@@ -73,7 +73,7 @@ const MainGreeting: React.FC = () => {
             {/* March 8 badge */}
             <div className="flex items-center gap-2 bg-gradient-to-r from-pink-400 to-purple-400 text-white rounded-full px-4 py-1.5 text-sm font-bold shadow-md">
               <span>🌷</span>
-              <span>March 8th · Women's Day</span>
+              <span>С праздником зая!</span>
               <span>🌷</span>
             </div>
 
@@ -91,10 +91,10 @@ const MainGreeting: React.FC = () => {
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.3, type: 'spring', stiffness: 300 }}
               >
-                Happy Women's Day!
+                С женским днем, зайчик! 💖
               </motion.h1>
               <p className="text-purple-600 text-base mt-2 font-medium">
-                To my wonderful, amazing you 💖
+                Менин жаним сени жаксы корем!
               </p>
             </div>
 
@@ -112,13 +112,13 @@ const MainGreeting: React.FC = () => {
           <div className="flex gap-3 items-start">
             <span className="text-3xl flex-shrink-0">📜</span>
             <div>
-              <h3 className="font-bold text-purple-800 text-base mb-1">A note from my heart:</h3>
               <p className="text-purple-700 text-sm leading-relaxed">
-                You deserve a whole garden of flowers, a sky full of stars, and all the love this world can hold.
-                Today and every day, I'm so grateful you exist. 🌸
+                Зайчик я долго это делал, хотел вовремя подготовить, успел как смог!
+                Поздравляю тебя с женским днем, дай бог чтобы ты всегда была счастлива и мы праздновали этот день всегда каждый год!
+                Прости за сегодня еще раз, я не должен был шутить про вокзал, когда ты так скучаешь, я тоже скучаю о тебе(( 🌸
               </p>
               <p className="text-pink-500 text-sm font-semibold mt-2">
-                — with all my love 💕
+                — я тя люблю, моя красавица! 💕
               </p>
             </div>
           </div>
@@ -134,18 +134,7 @@ const MainGreeting: React.FC = () => {
           <MessageCards />
         </motion.div>
 
-        {/* Gift box section */}
-        <motion.div
-          className="w-full bg-white/70 backdrop-blur-sm rounded-3xl p-6 shadow-lg flex flex-col items-center gap-3"
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7, type: 'spring', stiffness: 200 }}
-        >
-          <h2 className="text-xl font-bold text-purple-800 text-center">
-            A special gift for you 🎁
-          </h2>
-          <GiftBox />
-        </motion.div>
+       
 
         {/* Cat row decoration */}
         <motion.div
@@ -173,10 +162,7 @@ const MainGreeting: React.FC = () => {
           transition={{ delay: 1.1 }}
         >
           <p className="text-pink-400 text-sm font-medium animate-heartbeat">
-            Made with 💗 just for you
-          </p>
-          <p className="text-purple-300 text-xs mt-1">
-            You are the best thing that ever happened to me ✨
+            Сделано с 💗
           </p>
         </motion.div>
       </div>

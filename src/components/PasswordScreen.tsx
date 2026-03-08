@@ -74,7 +74,7 @@ const Star = ({ x, y, delay }: { x: number; y: number; delay: number }) => (
   </div>
 );
 
-const PASSWORD = '0308';
+const PASSWORD = '0623';
 
 const PasswordScreen: React.FC<PasswordScreenProps> = ({ onUnlock }) => {
   const [input, setInput] = useState('');
@@ -100,11 +100,11 @@ const PasswordScreen: React.FC<PasswordScreenProps> = ({ onUnlock }) => {
       setTimeout(() => {
         if (newInput === PASSWORD) {
           setIsSuccess(true);
-          setMessage('💖 Welcome, my love! 💖');
+          setMessage('💖 Молодеццццц! 💖');
           setTimeout(() => onUnlock(), 1400);
         } else {
           setIsShaking(true);
-          setMessage('Meow~ wrong code! Try again 🐾');
+          setMessage('Зайчик кате, дурыстап жазкор или менен сура 🐾');
           setTimeout(() => {
             setIsShaking(false);
             setInput('');
@@ -161,10 +161,10 @@ const PasswordScreen: React.FC<PasswordScreenProps> = ({ onUnlock }) => {
           transition={{ delay: 0.2 }}
         >
           <p className="text-xs font-semibold tracking-[0.25em] text-pink-400 uppercase mb-1">
-            🔒 Secret Garden
+              🔒 посторонним вход запрещен
           </p>
           <h1 className="text-3xl font-bold text-purple-800 leading-tight">
-            Enter the<br />Magic Code
+            Пароль жаз зайчик
           </h1>
         </motion.div>
 
@@ -249,16 +249,7 @@ const PasswordScreen: React.FC<PasswordScreenProps> = ({ onUnlock }) => {
           })}
         </motion.div>
 
-        {/* Hint */}
-        <motion.button
-          className="text-xs text-purple-400 underline underline-offset-2 touch-target"
-          onTap={() => setShowHint(v => !v)}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1 }}
-        >
-          Need a hint? 🐱
-        </motion.button>
+       
 
         <AnimatePresence>
           {showHint && (
@@ -268,8 +259,7 @@ const PasswordScreen: React.FC<PasswordScreenProps> = ({ onUnlock }) => {
               exit={{ opacity: 0, height: 0 }}
               className="text-xs text-pink-400 text-center bg-pink-50 rounded-xl px-4 py-2"
             >
-              It's the date of this very special day 🌸<br />
-              <span className="opacity-50">(hint: 0 _ 0 _)</span>
+              День, когда мы впервые встретились 🌸<br />
             </motion.p>
           )}
         </AnimatePresence>
