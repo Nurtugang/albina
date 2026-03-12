@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>WhatsApp Viewer</title>
+    <style>
+        :root {
+            --bg-color: #efeae2;
+            --me-msg: #d9fdd3;
+            --other-msg: #ffffff;
+            --header-bg: #008069;
+            --wa-gray: #667781;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #f0f2f5; height: 100vh; display: flex; justify-content: center; overflow: hidden; }
+        
+        #upload-screen { 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+            width: 100%; max-width: 500px; background: white; padding: 20px; text-align: center;
+        }
+        .upload-btn {
+            background: #25d366; color: white; padding: 15px 30px; border-radius: 30px;
+            font-weight: bold; cursor: pointer; margin-top: 20px; display: inline-block;
+        }
+        input[type="file"] { display: none; }
+
+        #app { display: none; flex-direction: column; width: 100%; max-width: 600px; background: var(--bg-color); height: 100vh; position: relative; }
+        
+        header { 
+            background: var(--header-bg); color: white; padding: 12px; 
+            position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .search-box { display: flex; gap: 8px; margin-top: 8px; align-items: center; }
+        .search-box input[type="text"] { 
+            flex: 1; padding: 10px 15px; border-radius: 20px; border: none; outline: none; font-size: 14px;
+        }
+        .search-box input[type="date"] {
+            padding: 8px; border-radius: 10px; border: none; font-size: 14px; cursor: pointer;
+        }
+
+        #chat-container { 
+            flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; 
+            background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
+            background-blend-mode: overlay;
+            scroll-behavior: smooth;
+        }
+        
+        .date-divider { text-align: center; margin: 15px 0; position: sticky; top: 5px; z-index: 10; }
+        .date-divider span { background: rgba(255, 255, 255, 0.9); padding: 5px 12px; border-radius: 8px; font-size: 12px; color: var(--wa-gray); box-shadow: 0 1px 1px rgba(0,0,0,0.1); }
+
+        .message { 
+            max-width: 85%; padding: 6px 10px 18px 10px; border-radius: 8px; font-size: 14.5px; 
+            position: relative; box-shadow: 0 1px 1px rgba(0,0,0,0.1); line-height: 1.4;
+            word-wrap: break-word;
+        }
+        .message.me { align-self: flex-end; background-color: var(--me-msg); border-top-right-radius: 0; }
+        .message.other { align-self: flex-start; background-color: var(--other-msg); border-top-left-radius: 0; }
+        
+        .sender { font-size: 12px; font-weight: 700; color: #128c7e; margin-bottom: 2px; }
+        .time { position: absolute; bottom: 3px; right: 8px; font-size: 10px; color: var(--wa-gray); }
+        
+        .media-tag { 
+            display: flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.04); 
+            padding: 8px; border-radius: 6px; color: #54656f; font-size: 13px; margin: 4px 0; font-style: italic;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="upload-screen">
+        <h2 style="color: #008069">WhatsApp Chat Viewer</h2>
+        <p style="color: #667781; margin-top: 10px;">Выберите .txt файл переписки</p>
+        <label class="upload-btn">
+            ОТКРЫТЬ ФАЙЛ
+            <input type="file" id="file-input" accept=".txt">
+        </label>
+    </div>
+
+    <div id="app">
+        <header>
+            <div id="chat-title" style="font-weight: bold;">Чат загружен</div>
+            <div class="search-box">
+                <input type="text" id="search" placeholder="Поиск..." oninput="filterChat()">
+                <input type="date" id="date-picker" onchange="scrollToDate()">
+            </div>
+        </header>
+        <div id="chat-container"></div>
+    </div>
+
+<script>
+    const MY_NAME = "Nurtugan Аzatbekuly"; 
+    let allMessages = [];
+
+    document.getElementById('file-input').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            parseChat(e.target.result);
+            document.getElementById('upload-screen').style.display = 'none';
+            document.getElementById('app').style.display = 'flex';
+            renderChat(allMessages);
+        };
+        reader.readAsText(file);
+    });
+
+    function parseChat(text) {
+        allMessages = [];
+        const lines = text.split('\n');
+        const dateRegex = /^(\d{1,2})[./](\d{1,2})[./](\d{2,4}), (\d{1,2}:\d{2}) - (.*?): (.*)$/;
+        let currentMsg = null;
+
+        lines.forEach(line => {
+            const match = line.match(dateRegex);
+            if (match) {
+                if (currentMsg) allMessages.push(currentMsg);
+                
+                let p1 = parseInt(match[1]);
+                let p2 = parseInt(match[2]);
+                let year = match[3];
+                
+                if (year.length === 2) year = '20' + year;
+                
+                let month, day;
+                if (p1 > 12) { day = p1; month = p2; }
+                else if (p2 > 12) { day = p2; month = p1; }
+                else { month = p1; day = p2; }
+
+                let isoDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+                let content = match[6].trim();
+                content = content.replace(/<Media omitted>/g, '<div class="media-tag">📷 Фото / Медиа</div>');
+                content = content.replace(/<Video note omitted>/g, '<div class="media-tag">⭕ Видеосообщение</div>');
+                content = content.replace(/<Audio omitted>/g, '<div class="media-tag">🎤 Голосовое сообщение</div>');
+
+                currentMsg = { 
+                    isoDate: isoDate, 
+                    rawDate: `${match[1]}/${match[2]}/${match[3]}`, 
+                    time: match[4], 
+                    sender: match[5], 
+                    text: content 
+                };
+            } else if (currentMsg && line.trim()) {
+                currentMsg.text += '<br>' + line.trim();
+            }
+        });
+        if (currentMsg) allMessages.push(currentMsg);
+    }
+
+    function renderChat(messages) {
+        const container = document.getElementById('chat-container');
+        container.innerHTML = '';
+        let lastDate = '';
+
+        messages.forEach(msg => {
+            if (msg.isoDate !== lastDate) {
+                const divider = document.createElement('div');
+                divider.className = 'date-divider';
+                divider.dataset.date = msg.isoDate;
+                divider.innerHTML = `<span>${msg.rawDate}</span>`;
+                container.appendChild(divider);
+                lastDate = msg.isoDate;
+            }
+
+            const div = document.createElement('div');
+            const isMe = msg.sender.includes(MY_NAME);
+            div.className = `message ${isMe ? 'me' : 'other'}`;
+            div.innerHTML = `
+                ${!isMe ? `<div class="sender">${msg.sender}</div>` : ''}
+                <div class="text">${msg.text}</div>
+                <span class="time">${msg.time}</span>
+            `;
+            container.appendChild(div);
+        });
+        container.scrollTop = container.scrollHeight;
+    }
+
+    function filterChat() {
+        const q = document.getElementById('search').value.toLowerCase();
+        const filtered = allMessages.filter(m => m.text.toLowerCase().includes(q) || m.sender.toLowerCase().includes(q));
+        renderChat(filtered);
+    }
+
+    function scrollToDate() {
+        const pickedDate = document.getElementById('date-picker').value; 
+        if (!pickedDate) return;
+
+        const container = document.getElementById('chat-container');
+        const target = container.querySelector(`.date-divider[data-date="${pickedDate}"]`);
+        
+        if (target) {
+            let offsetTop = 0;
+            let el = target;
+            while (el && el !== container) {
+                offsetTop += el.offsetTop;
+                el = el.offsetParent;
+            }
+
+            container.scrollTo({ top: offsetTop - 15, behavior: 'smooth' });
+        } else {
+            alert("Сообщений за эту дату (" + pickedDate + ") не найдено.");
+        }
+    }
+</script>
+</body>
+</html>
